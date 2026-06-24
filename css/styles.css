@@ -1645,8 +1645,8 @@ ul { list-style: none; }
 }
 .prod-card.is-hidden { display: none; }
 .prod-card:hover {
-  transform: translateY(-6px); background: var(--red); border-color: var(--red);
-  box-shadow: 0 22px 46px rgba(225,6,0,.30);
+  transform: translateY(-6px); border-color: var(--red);
+  box-shadow: 0 20px 44px rgba(0,0,0,.10);
 }
 .prod-card-img {
   height: 188px; display: flex; align-items: center; justify-content: center;
@@ -1672,10 +1672,6 @@ ul { list-style: none; }
   display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
 }
 .prod-card .discover .tri { transition: transform .3s ease; }
-/* hover — only the text/body area turns red; image stays as-is */
-.prod-card:hover h3,
-.prod-card:hover .discover { color: var(--white); }
-.prod-card:hover p { color: rgba(255,255,255,.9); }
 .prod-card:hover .discover .tri { transform: translateX(5px); }
 
 .catalog-empty { display: none; padding: 40px 0; color: var(--gray-500); font-size: 15px; }
