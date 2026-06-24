@@ -453,6 +453,7 @@ def build_category(filename, title, hero_title, hero_sub, hero_bg, tag, active_t
 </html>'''
     # fix the hero_bg interpolation (used a different quoting above)
     html = html.replace('""" + hero_bg + """', hero_bg)
+    html = html.replace('NEO ', 'NEO™ ')  # trademark after the NEO brand
     with open(filename,'w') as f:
         f.write(html)
     print('wrote', filename)
@@ -555,6 +556,7 @@ def build_stub(slug, name, cat, desc):
 <script src="js/main.js"></script>
 </body>
 </html>'''
+    html = html.replace('NEO ', 'NEO™ ')  # trademark after the NEO brand
     with open(slug + '.html','w') as f:
         f.write(html)
     print('wrote', slug + '.html')

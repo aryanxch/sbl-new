@@ -1641,17 +1641,17 @@ ul { list-style: none; }
   display: flex; flex-direction: column;
   background: var(--white); border: 1px solid var(--gray-200);
   border-radius: 16px; overflow: hidden;
-  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease, background .3s ease;
 }
 .prod-card.is-hidden { display: none; }
 .prod-card:hover {
-  transform: translateY(-6px); border-color: var(--red);
-  box-shadow: 0 20px 44px rgba(0,0,0,.10);
+  transform: translateY(-6px); background: var(--red); border-color: var(--red);
+  box-shadow: 0 22px 46px rgba(225,6,0,.30);
 }
 .prod-card-img {
   height: 188px; display: flex; align-items: center; justify-content: center;
   background: var(--white); border-bottom: 1px solid var(--gray-100);
-  padding: 20px; overflow: hidden;
+  padding: 20px; overflow: hidden; transition: background .3s ease;
 }
 .prod-card-img img {
   max-height: 100%; max-width: 84%; object-fit: contain; transition: transform .5s ease;
@@ -1660,15 +1660,22 @@ ul { list-style: none; }
 .prod-card-body { padding: 22px 22px 24px; display: flex; flex-direction: column; flex: 1; }
 .prod-card h3 {
   font-family: var(--display); font-size: 18px; font-weight: 700; color: var(--red);
-  margin-bottom: 10px; letter-spacing: .01em;
+  margin-bottom: 10px; letter-spacing: .01em; transition: color .25s ease;
 }
-.prod-card p { font-size: 13.5px; line-height: 1.6; color: var(--gray-500); margin-bottom: 20px; flex: 1; }
+.prod-card p {
+  font-size: 13.5px; line-height: 1.6; color: var(--gray-500); margin-bottom: 20px; flex: 1;
+  transition: color .25s ease;
+}
 .prod-card .discover {
   font-size: 12px; font-weight: 700; letter-spacing: .09em;
   text-transform: uppercase; color: var(--red);
   display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
 }
 .prod-card .discover .tri { transition: transform .3s ease; }
+/* hover — only the text/body area turns red; image stays as-is */
+.prod-card:hover h3,
+.prod-card:hover .discover { color: var(--white); }
+.prod-card:hover p { color: rgba(255,255,255,.9); }
 .prod-card:hover .discover .tri { transform: translateX(5px); }
 
 .catalog-empty { display: none; padding: 40px 0; color: var(--gray-500); font-size: 15px; }
