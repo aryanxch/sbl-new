@@ -52,8 +52,8 @@
           <div class="dropdown wide mega">
             <div class="drop-col">
               <a href="packaged-explosives.html" class="drop-head">Packaged Explosives</a>
-              <a href="packaged-explosives.html?filter=slurry">Slurry Explosives</a>
               <a href="packaged-explosives.html?filter=emulsion">Emulsion Explosives</a>
+              <a href="packaged-explosives.html?filter=slurry">Slurry Explosives</a>
               <a href="packaged-explosives.html?filter=seismic">Seismic Explosives</a>
             </div>
             <div class="drop-col">
@@ -62,9 +62,9 @@
             </div>
             <div class="drop-col">
               <a href="initiating-systems.html" class="drop-head">Initiating Systems</a>
+              <a href="initiating-systems.html?filter=electronic">Electronic Detonator</a>
               <a href="initiating-systems.html?filter=non-electric">Non-Electric Detonator</a>
               <a href="initiating-systems.html?filter=copper-delay">Copper Delay Detonator</a>
-              <a href="initiating-systems.html?filter=electronic">Electronic Detonator</a>
               <a href="initiating-systems.html?filter=ordinary">Ordinary Detonator</a>
               <a href="initiating-systems.html?filter=cast-booster">Cast Booster</a>
               <a href="initiating-systems.html?filter=detonating-fuse">Detonating Fuse</a>
@@ -127,7 +127,7 @@
 
     <div class="catalog-layout">
       <aside class="catalog-aside">
-        <a href="https://www.sblenergy.com/_files/ugd/06db74_7aba56dcc5c9456fbe8bcffc8c9c3cb6.pdf" target="_blank" class="download-chip">
+        <a href="assets/brochure/sbl-energy-brochure.pdf" target="_blank" class="download-chip" download>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download Brochure
         </a>
@@ -135,12 +135,13 @@
         <div class="filter-list">
           <label class="filter-check"><input type="checkbox" data-filter="bulk-emulsion"><span class="box"></span> Bulk Emulsion <span class="count">(1)</span></label>
         </div>
+
         <span class="filter-clear" id="clearFilters">Clear filters ✕</span>
       </aside>
 
       <div class="catalog-main">
         <div class="prod-card-grid">
-          <a class="prod-card" data-cat="bulk-emulsion" href="neo-bulk.html">
+          <a class="prod-card" data-cat="bulk-emulsion" data-apps="" href="neo-bulk.html">
             <div class="prod-card-img"><img src="images/products/bulk-truck-user.jpg" alt="NEO™ BULK" /></div>
             <div class="prod-card-body">
               <h3>NEO™ BULK</h3>
@@ -215,31 +216,39 @@
 <script src="js/main.js"></script>
 <script>
 (function(){
-  var checks = Array.prototype.slice.call(document.querySelectorAll('.filter-check input'));
-  var cards  = Array.prototype.slice.call(document.querySelectorAll('.prod-card'));
-  var empty  = document.querySelector('.catalog-empty');
-  var clear  = document.getElementById('clearFilters');
-  function selected(){ return checks.filter(function(c){return c.checked;}).map(function(c){return c.getAttribute('data-filter');}); }
+  var qsa   = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var typeC = qsa('.filter-check input[data-filter]');
+  var appC  = qsa('.filter-check input[data-app]');
+  var cards = qsa('.prod-card');
+  var empty = document.querySelector('.catalog-empty');
+  var clear = document.getElementById('clearFilters');
+  function pick(list, attr){ return list.filter(function(c){return c.checked;}).map(function(c){return c.getAttribute(attr);}); }
   function apply(updateUrl){
-    var sel = selected(), shown = 0;
+    var t = pick(typeC,'data-filter'), a = pick(appC,'data-app'), shown = 0;
     cards.forEach(function(card){
-      var ok = sel.length === 0 || sel.indexOf(card.getAttribute('data-cat')) > -1;
+      var apps = (card.getAttribute('data-apps') || '').split(',').filter(Boolean);
+      var okT = t.length === 0 || t.indexOf(card.getAttribute('data-cat')) > -1;
+      var okA = a.length === 0 || apps.some(function(x){ return a.indexOf(x) > -1; });
+      var ok = okT && okA;
       card.classList.toggle('is-hidden', !ok);
       if(ok) shown++;
     });
     if(empty) empty.classList.toggle('show', shown === 0);
-    if(clear) clear.classList.toggle('show', sel.length > 0);
+    if(clear) clear.classList.toggle('show', (t.length + a.length) > 0);
     if(updateUrl){
       var u = new URL(window.location.href);
-      if(sel.length) u.searchParams.set('filter', sel.join(',')); else u.searchParams.delete('filter');
+      if(t.length) u.searchParams.set('filter', t.join(',')); else u.searchParams.delete('filter');
+      if(a.length) u.searchParams.set('app', a.join(',')); else u.searchParams.delete('app');
       window.history.replaceState(null, '', u);
     }
   }
   var params = new URLSearchParams(window.location.search);
-  var pre = (params.get('filter') || '').split(',').filter(Boolean);
-  checks.forEach(function(c){ if(pre.indexOf(c.getAttribute('data-filter')) > -1) c.checked = true; });
-  checks.forEach(function(c){ c.addEventListener('change', function(){ apply(true); }); });
-  if(clear) clear.addEventListener('click', function(){ checks.forEach(function(c){ c.checked = false; }); apply(true); });
+  var preT = (params.get('filter') || '').split(',').filter(Boolean);
+  var preA = (params.get('app') || '').split(',').filter(Boolean);
+  typeC.forEach(function(c){ if(preT.indexOf(c.getAttribute('data-filter')) > -1) c.checked = true; });
+  appC.forEach(function(c){ if(preA.indexOf(c.getAttribute('data-app')) > -1) c.checked = true; });
+  typeC.concat(appC).forEach(function(c){ c.addEventListener('change', function(){ apply(true); }); });
+  if(clear) clear.addEventListener('click', function(){ typeC.concat(appC).forEach(function(c){ c.checked = false; }); apply(true); });
   apply(false);
 })();
 </script>

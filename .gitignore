@@ -8,3 +8,6 @@ __pycache__/
 
 # Editor
 .vscode/
+
+# Raw source product images (processed copies are committed in images/products/)
+assets/ALL Products Image/
