@@ -270,39 +270,47 @@ def head(title, desc):
 
 FILTER_JS = '''<script>
 (function(){
-  var qsa   = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
-  var typeC = qsa('.filter-check input[data-filter]');
-  var appC  = qsa('.filter-check input[data-app]');
+  var qsa = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  // [checkbox attribute, card attribute, URL param]
+  var GROUPS = [
+    ['data-filter','data-cat','filter'],
+    ['data-app','data-apps','app'],
+    ['data-sens','data-sens','sens'],
+    ['data-dia','data-dia','dia']
+  ];
   var cards = qsa('.prod-card');
   var empty = document.querySelector('.catalog-empty');
   var clear = document.getElementById('clearFilters');
-  function pick(list, attr){ return list.filter(function(c){return c.checked;}).map(function(c){return c.getAttribute(attr);}); }
+  var allInputs = [];
+  GROUPS.forEach(function(g){ g.inputs = qsa('.filter-check input[' + g[0] + ']'); allInputs = allInputs.concat(g.inputs); });
+  function sel(g){ return g.inputs.filter(function(c){return c.checked;}).map(function(c){return c.getAttribute(g[0]);}); }
   function apply(updateUrl){
-    var t = pick(typeC,'data-filter'), a = pick(appC,'data-app'), shown = 0;
+    var picks = GROUPS.map(sel), shown = 0, active = 0;
+    picks.forEach(function(p){ active += p.length; });
     cards.forEach(function(card){
-      var apps = (card.getAttribute('data-apps') || '').split(',').filter(Boolean);
-      var okT = t.length === 0 || t.indexOf(card.getAttribute('data-cat')) > -1;
-      var okA = a.length === 0 || apps.some(function(x){ return a.indexOf(x) > -1; });
-      var ok = okT && okA;
+      var ok = GROUPS.every(function(g, i){
+        if(picks[i].length === 0) return true;
+        var vals = (card.getAttribute(g[1]) || '').split(',').filter(Boolean);
+        return vals.some(function(x){ return picks[i].indexOf(x) > -1; });
+      });
       card.classList.toggle('is-hidden', !ok);
       if(ok) shown++;
     });
     if(empty) empty.classList.toggle('show', shown === 0);
-    if(clear) clear.classList.toggle('show', (t.length + a.length) > 0);
+    if(clear) clear.classList.toggle('show', active > 0);
     if(updateUrl){
       var u = new URL(window.location.href);
-      if(t.length) u.searchParams.set('filter', t.join(',')); else u.searchParams.delete('filter');
-      if(a.length) u.searchParams.set('app', a.join(',')); else u.searchParams.delete('app');
+      GROUPS.forEach(function(g, i){ if(picks[i].length) u.searchParams.set(g[2], picks[i].join(',')); else u.searchParams.delete(g[2]); });
       window.history.replaceState(null, '', u);
     }
   }
   var params = new URLSearchParams(window.location.search);
-  var preT = (params.get('filter') || '').split(',').filter(Boolean);
-  var preA = (params.get('app') || '').split(',').filter(Boolean);
-  typeC.forEach(function(c){ if(preT.indexOf(c.getAttribute('data-filter')) > -1) c.checked = true; });
-  appC.forEach(function(c){ if(preA.indexOf(c.getAttribute('data-app')) > -1) c.checked = true; });
-  typeC.concat(appC).forEach(function(c){ c.addEventListener('change', function(){ apply(true); }); });
-  if(clear) clear.addEventListener('click', function(){ typeC.concat(appC).forEach(function(c){ c.checked = false; }); apply(true); });
+  GROUPS.forEach(function(g){
+    var pre = (params.get(g[2]) || '').split(',').filter(Boolean);
+    g.inputs.forEach(function(c){ if(pre.indexOf(c.getAttribute(g[0])) > -1) c.checked = true; });
+  });
+  allInputs.forEach(function(c){ c.addEventListener('change', function(){ apply(true); }); });
+  if(clear) clear.addEventListener('click', function(){ allInputs.forEach(function(c){ c.checked = false; }); apply(true); });
   apply(false);
 })();
 </script>'''
@@ -375,17 +383,17 @@ TYPES_PKG = [
 # NEO PRIME, NEO GEL 90, NEO GEL 901, NEO DYNE, DYNO POWER.
 PRODUCTS_PKG = [
     ('neo-prime',        'NEO PRIME',          'emulsion','Cartridged emulsion explosive.'),
-    ('neo-gel-90',       'NEO GEL 90',         'emulsion','Cartridged emulsion explosive.'),
+    ('neo-gel-90',       'NEO GEL 90',         'emulsion','Cap-sensitive, small-diameter cartridged emulsion explosive.'),
     ('neo-gel-901',      'NEO GEL 901',        'emulsion','Cartridged emulsion explosive.'),
     ('neo-dyne',         'NEO DYNE',           'emulsion','Cartridged emulsion explosive.'),
     ('dyno-power-90',    'DYNO POWER-90',      'emulsion','High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.'),
-    ('neo-blast',        'NEO BLAST',          'emulsion','Cartridged emulsion explosive.'),
-    ('neo-base',         'NEO BASE',           'emulsion','Cartridged emulsion explosive.'),
-    ('neo-column',       'NEO COLUMN',         'emulsion','Cartridged emulsion explosive.'),
-    ('neo-col-special',  'NEO COL (Special)',  'slurry','Cartridged slurry (water-gel) explosive.'),
-    ('neo-base-special', 'NEO BASE (Special)', 'slurry','Cartridged slurry (water-gel) explosive.'),
-    ('neo-prime-special','NEO PRIME (Special)','slurry','Cartridged slurry (water-gel) explosive.'),
-    ('neo-blast-special','NEO BLAST (Special)','slurry','Cartridged slurry (water-gel) explosive.'),
+    ('neo-blast',        'NEO BLAST',          'emulsion','Cap-sensitive, large-diameter cartridged emulsion explosive.'),
+    ('neo-base',         'NEO BASE',           'emulsion','Booster-sensitive, large-diameter cartridged emulsion explosive.'),
+    ('neo-column',       'NEO COLUMN',         'emulsion','Booster-sensitive, large-diameter cartridged emulsion explosive.'),
+    ('neo-col-special',  'NEO COL (Special)',  'slurry','Booster-sensitive (non-cap) cartridged slurry (water-gel) explosive.'),
+    ('neo-base-special', 'NEO BASE (Special)', 'slurry','Booster-sensitive (non-cap) cartridged slurry (water-gel) explosive.'),
+    ('neo-prime-special','NEO PRIME (Special)','slurry','Cap-sensitive cartridged slurry (water-gel) explosive.'),
+    ('neo-blast-special','NEO BLAST (Special)','slurry','Cap-sensitive cartridged slurry (water-gel) explosive.'),
     ('neo-gel-90-cpt',   'NEO GEL-90 CPT',     'seismic','Seismic emulsion explosive for exploration.'),
 ]
 
@@ -447,15 +455,53 @@ PRODUCT_APPS = {
     'tnt':              ['defence'],
 }
 
+# ---------------------------------------------------------------- sensitivity / diameter classification
+# Two filter axes for packaged products: sensitivity (cap/booster) and cartridge diameter (large/small).
+SENS_TYPES = [('cap', 'Cap-sensitive'), ('booster', 'Booster-sensitive')]
+DIA_TYPES  = [('large', 'Large Diameter'), ('small', 'Small Diameter')]
+# slug -> (sensitivity, diameter|None)
+PRODUCT_CLASS = {
+    # emulsion
+    'neo-prime':        ('cap', 'large'),
+    'neo-blast':        ('cap', 'large'),
+    'neo-gel-901':      ('cap', 'small'),
+    'neo-gel-90':       ('cap', 'small'),
+    'neo-dyne':         ('cap', 'small'),
+    'dyno-power-90':    ('cap', 'small'),
+    'neo-column':       ('booster', 'large'),
+    'neo-base':         ('booster', 'large'),
+    # slurry (water-gel) — large-diameter cartridges (85/125/200 mm), tagged for filtering
+    'neo-prime-special':('cap', 'large'),
+    'neo-blast-special':('cap', 'large'),
+    'neo-base-special': ('booster', 'large'),
+    'neo-col-special':  ('booster', 'large'),
+}
+# Categories whose product pages should show the diameter in the displayed label.
+DIA_LABEL_CATS = {'emulsion'}
+
+def class_label(slug, cat=None):
+    c = PRODUCT_CLASS.get(slug)
+    if not c:
+        return None
+    sens, dia = c
+    txt = 'Cap-sensitive' if sens == 'cap' else 'Booster-sensitive'
+    if dia and (cat is None or cat in DIA_LABEL_CATS):
+        txt += ' &middot; ' + ('Large' if dia == 'large' else 'Small') + ' diameter'
+    return txt
+
 def product_card(slug, name, cat, desc):
     # Use a dedicated product photo when one exists, else the category image.
     own = 'images/products/%s.png' % slug
     img = own if os.path.exists(own) else IMG_BY_CAT[cat]
     apps = ' data-apps="%s"' % ','.join(PRODUCT_APPS.get(slug, []))
+    cls = PRODUCT_CLASS.get(slug)
+    clsattr = ''
+    if cls:
+        clsattr = ' data-sens="%s"' % cls[0] + (' data-dia="%s"' % cls[1] if cls[1] else '')
     # Products with a TDS get a distinct one-line blurb ('card', else tagline) instead of a generic line.
     if slug in RICH:
         desc = RICH[slug].get('card', RICH[slug]['tagline'])
-    return ('''          <a class="prod-card" data-cat="''' + cat + '''"''' + apps + ''' href="''' + slug + '''.html">
+    return ('''          <a class="prod-card" data-cat="''' + cat + '''"''' + apps + clsattr + ''' href="''' + slug + '''.html">
             <div class="prod-card-img"><img src="''' + img + '''" alt="''' + name + '''" /></div>
             <div class="prod-card-body">
               <h3>''' + name + '''</h3>
@@ -489,6 +535,30 @@ def apps_sidebar(products):
         <div class="filter-list">
 ''' + '\n'.join(rows) + '''
         </div>''')
+
+def class_sidebar(products):
+    """Sensitivity + Diameter filter groups — only options present among this page's products."""
+    sens_c, dia_c = {}, {}
+    for slug,_,_,_ in products:
+        c = PRODUCT_CLASS.get(slug)
+        if not c:
+            continue
+        sens_c[c[0]] = sens_c.get(c[0],0)+1
+        if c[1]:
+            dia_c[c[1]] = dia_c.get(c[1],0)+1
+    def group(title, attr, types, counts):
+        rows = []
+        for key,label in types:
+            if counts.get(key,0) > 0:
+                rows.append('          <label class="filter-check"><input type="checkbox" data-%s="%s"><span class="box"></span> %s <span class="count">(%d)</span></label>' % (attr,key,label,counts[key]))
+        if not rows:
+            return ''
+        return ('''        <div class="filter-title filter-title-apps">''' + title + '''</div>
+        <div class="filter-list">
+''' + '\n'.join(rows) + '''
+        </div>''')
+    return (group('Sensitivity', 'sens', SENS_TYPES, sens_c) + '\n'
+          + group('Diameter', 'dia', DIA_TYPES, dia_c)).strip('\n')
 
 # ---------------------------------------------------------------- category page
 def build_category(filename, title, hero_title, hero_sub, hero_bg, tag, active_tab,
@@ -531,6 +601,7 @@ def build_category(filename, title, hero_title, hero_sub, hero_bg, tag, active_t
         <div class="filter-list">
 ''' + filter_sidebar(types, products) + '''
         </div>
+''' + class_sidebar(products) + '''
 ''' + apps_sidebar(products) + '''
         <span class="filter-clear" id="clearFilters">Clear filters ✕</span>
       </aside>
@@ -676,7 +747,7 @@ RICH = {
   # ---------------------------------------------------------------- emulsion
   'neo-prime': {
     'name': 'NEO PRIME', 'cat': 'emulsion',
-    'card': 'Our highest weight-strength emulsion (RWS 118%, VOD 4400 m/s) for large-diameter priming and column charging.',
+    'card': 'Cap-sensitive, large-diameter emulsion — our highest weight strength (RWS 118%, VOD 4400 m/s) for priming and column charging.',
     'tagline': 'High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.',
     'meta': 'NEO PRIME — high-strength, cap-sensitive packaged emulsion explosive from SBL Energy for priming '
             'and column charging in surface mining, underground, quarrying and tunnelling.',
@@ -699,7 +770,7 @@ RICH = {
   },
   'neo-gel-901': {
     'name': 'NEO GEL 901', 'cat': 'emulsion',
-    'card': 'High-strength emulsion (RWS 110%, VOD 4500 m/s) for small- and mid-diameter priming and column work.',
+    'card': 'Cap-sensitive, small-diameter emulsion (RWS 110%, VOD 4500 m/s) for priming and column work.',
     'tagline': 'High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.',
     'meta': 'NEO GEL 901 — high-strength, cap-sensitive packaged emulsion explosive from SBL Energy for priming '
             'and column charging in surface mining, underground, quarrying and tunnelling.',
@@ -722,7 +793,7 @@ RICH = {
   },
   'neo-dyne': {
     'name': 'NEO DYNE', 'cat': 'emulsion',
-    'card': 'Economical medium-strength column emulsion (RWS 108%, VOD 4300 m/s) for small-diameter holes.',
+    'card': 'Cap-sensitive, small-diameter column emulsion (RWS 108%, VOD 4300 m/s) — economical medium-strength option.',
     'tagline': 'Medium-strength, cap-sensitive packaged emulsion explosive for column charging.',
     'meta': 'NEO DYNE — medium-strength, cap-sensitive packaged emulsion explosive from SBL Energy for column '
             'charging in surface mining, underground, quarrying, tunnelling and general construction blasting.',
@@ -747,7 +818,7 @@ RICH = {
   },
   'dyno-power-90': {
     'name': 'DYNO POWER-90', 'cat': 'emulsion',
-    'card': 'Our highest-VOD emulsion (4700 m/s, RWS 115%) tuned for priming and initiating ANFO columns in hard rock.',
+    'card': 'Cap-sensitive, small-diameter emulsion — our highest VOD (4700 m/s, RWS 115%) for priming and initiating ANFO columns in hard rock.',
     'tagline': 'High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.',
     'meta': 'DYNO POWER-90 — high-strength, cap-sensitive packaged emulsion explosive from SBL Energy. '
             'High VOD and excellent water resistance for priming and column charging in hard rock, underground, quarrying and tunnelling.',
@@ -1000,6 +1071,8 @@ def build_rich(slug, d):
     own = 'images/products/%s.png' % slug
     img = d.get('img', own if os.path.exists(own) else IMG_BY_CAT[cat])
     pdf = d.get('pdf', 'assets/tds/' + slug + '-tds.pdf')
+    cl = class_label(slug, cat)
+    cls_html = ('\n        <div class="class-pill">' + cl + '</div>') if cl else ''
 
     specs = '\n'.join(
         '''            <div class="key-spec">
@@ -1049,7 +1122,7 @@ def build_rich(slug, d):
       </div>
       <div class="prod-text">
         <div class="section-tag"><span class="tag-line"></span> ''' + catname.upper() + '''</div>
-        <h2 class="section-title">''' + name + '''</h2>
+        <h2 class="section-title">''' + name + '''</h2>''' + cls_html + '''
 ''' + intro + '''
         <div class="key-spec-grid">
 ''' + specs + '''

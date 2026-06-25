@@ -140,6 +140,7 @@
           <label class="filter-check"><input type="checkbox" data-filter="cast-booster"><span class="box"></span> Cast Booster <span class="count">(2)</span></label>
           <label class="filter-check"><input type="checkbox" data-filter="detonating-fuse"><span class="box"></span> Detonating Fuse <span class="count">(1)</span></label>
         </div>
+
         <div class="filter-title filter-title-apps">Applications</div>
         <div class="filter-list">
           <label class="filter-check"><input type="checkbox" data-app="surface-mining"><span class="box"></span> Surface Mining <span class="count">(6)</span></label>
@@ -309,39 +310,47 @@
 <script src="js/main.js"></script>
 <script>
 (function(){
-  var qsa   = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
-  var typeC = qsa('.filter-check input[data-filter]');
-  var appC  = qsa('.filter-check input[data-app]');
+  var qsa = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  // [checkbox attribute, card attribute, URL param]
+  var GROUPS = [
+    ['data-filter','data-cat','filter'],
+    ['data-app','data-apps','app'],
+    ['data-sens','data-sens','sens'],
+    ['data-dia','data-dia','dia']
+  ];
   var cards = qsa('.prod-card');
   var empty = document.querySelector('.catalog-empty');
   var clear = document.getElementById('clearFilters');
-  function pick(list, attr){ return list.filter(function(c){return c.checked;}).map(function(c){return c.getAttribute(attr);}); }
+  var allInputs = [];
+  GROUPS.forEach(function(g){ g.inputs = qsa('.filter-check input[' + g[0] + ']'); allInputs = allInputs.concat(g.inputs); });
+  function sel(g){ return g.inputs.filter(function(c){return c.checked;}).map(function(c){return c.getAttribute(g[0]);}); }
   function apply(updateUrl){
-    var t = pick(typeC,'data-filter'), a = pick(appC,'data-app'), shown = 0;
+    var picks = GROUPS.map(sel), shown = 0, active = 0;
+    picks.forEach(function(p){ active += p.length; });
     cards.forEach(function(card){
-      var apps = (card.getAttribute('data-apps') || '').split(',').filter(Boolean);
-      var okT = t.length === 0 || t.indexOf(card.getAttribute('data-cat')) > -1;
-      var okA = a.length === 0 || apps.some(function(x){ return a.indexOf(x) > -1; });
-      var ok = okT && okA;
+      var ok = GROUPS.every(function(g, i){
+        if(picks[i].length === 0) return true;
+        var vals = (card.getAttribute(g[1]) || '').split(',').filter(Boolean);
+        return vals.some(function(x){ return picks[i].indexOf(x) > -1; });
+      });
       card.classList.toggle('is-hidden', !ok);
       if(ok) shown++;
     });
     if(empty) empty.classList.toggle('show', shown === 0);
-    if(clear) clear.classList.toggle('show', (t.length + a.length) > 0);
+    if(clear) clear.classList.toggle('show', active > 0);
     if(updateUrl){
       var u = new URL(window.location.href);
-      if(t.length) u.searchParams.set('filter', t.join(',')); else u.searchParams.delete('filter');
-      if(a.length) u.searchParams.set('app', a.join(',')); else u.searchParams.delete('app');
+      GROUPS.forEach(function(g, i){ if(picks[i].length) u.searchParams.set(g[2], picks[i].join(',')); else u.searchParams.delete(g[2]); });
       window.history.replaceState(null, '', u);
     }
   }
   var params = new URLSearchParams(window.location.search);
-  var preT = (params.get('filter') || '').split(',').filter(Boolean);
-  var preA = (params.get('app') || '').split(',').filter(Boolean);
-  typeC.forEach(function(c){ if(preT.indexOf(c.getAttribute('data-filter')) > -1) c.checked = true; });
-  appC.forEach(function(c){ if(preA.indexOf(c.getAttribute('data-app')) > -1) c.checked = true; });
-  typeC.concat(appC).forEach(function(c){ c.addEventListener('change', function(){ apply(true); }); });
-  if(clear) clear.addEventListener('click', function(){ typeC.concat(appC).forEach(function(c){ c.checked = false; }); apply(true); });
+  GROUPS.forEach(function(g){
+    var pre = (params.get(g[2]) || '').split(',').filter(Boolean);
+    g.inputs.forEach(function(c){ if(pre.indexOf(c.getAttribute(g[0])) > -1) c.checked = true; });
+  });
+  allInputs.forEach(function(c){ c.addEventListener('change', function(){ apply(true); }); });
+  if(clear) clear.addEventListener('click', function(){ allInputs.forEach(function(c){ c.checked = false; }); apply(true); });
   apply(false);
 })();
 </script>
