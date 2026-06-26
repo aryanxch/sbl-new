@@ -382,11 +382,12 @@ TYPES_PKG = [
 # Emulsion first; within emulsion the priority products lead:
 # NEO PRIME, NEO GEL 90, NEO GEL 901, NEO DYNE, DYNO POWER.
 PRODUCTS_PKG = [
+    # TDS + photo products first, then the rest.
     ('neo-prime',        'NEO PRIME',          'emulsion','Cartridged emulsion explosive.'),
-    ('neo-gel-90',       'NEO GEL 90',         'emulsion','Cap-sensitive, small-diameter cartridged emulsion explosive.'),
     ('neo-gel-901',      'NEO GEL 901',        'emulsion','Cartridged emulsion explosive.'),
     ('neo-dyne',         'NEO DYNE',           'emulsion','Cartridged emulsion explosive.'),
     ('dyno-power-90',    'DYNO POWER-90',      'emulsion','High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.'),
+    ('neo-gel-90',       'NEO GEL 90',         'emulsion','Cap-sensitive, small-diameter cartridged emulsion explosive.'),
     ('neo-blast',        'NEO BLAST',          'emulsion','Cap-sensitive, large-diameter cartridged emulsion explosive.'),
     ('neo-base',         'NEO BASE',           'emulsion','Booster-sensitive, large-diameter cartridged emulsion explosive.'),
     ('neo-column',       'NEO COLUMN',         'emulsion','Booster-sensitive, large-diameter cartridged emulsion explosive.'),
