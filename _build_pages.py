@@ -390,10 +390,10 @@ PRODUCTS_PKG = [
     ('neo-blast',        'NEO BLAST',          'emulsion','Cap-sensitive, large-diameter cartridged emulsion explosive.'),
     ('neo-base',         'NEO BASE',           'emulsion','Booster-sensitive, large-diameter cartridged emulsion explosive.'),
     ('neo-column',       'NEO COLUMN',         'emulsion','Booster-sensitive, large-diameter cartridged emulsion explosive.'),
-    ('neo-col-special',  'NEO COL (Special)',  'slurry','Booster-sensitive (non-cap) cartridged slurry (water-gel) explosive.'),
-    ('neo-base-special', 'NEO BASE (Special)', 'slurry','Booster-sensitive (non-cap) cartridged slurry (water-gel) explosive.'),
-    ('neo-prime-special','NEO PRIME (Special)','slurry','Cap-sensitive cartridged slurry (water-gel) explosive.'),
-    ('neo-blast-special','NEO BLAST (Special)','slurry','Cap-sensitive cartridged slurry (water-gel) explosive.'),
+    ('neo-col-special',  'NEO COL - SPECIAL',  'slurry','Booster-sensitive (non-cap) cartridged slurry (water-gel) explosive.'),
+    ('neo-base-special', 'NEO BASE - SPECIAL', 'slurry','Booster-sensitive (non-cap) cartridged slurry (water-gel) explosive.'),
+    ('neo-prime-special','NEO PRIME - SPECIAL','slurry','Cap-sensitive cartridged slurry (water-gel) explosive.'),
+    ('neo-blast-special','NEO BLAST - SPECIAL','slurry','Cap-sensitive cartridged slurry (water-gel) explosive.'),
     ('neo-gel-90-cpt',   'NEO GEL-90 CPT',     'seismic','Seismic emulsion explosive for exploration.'),
 ]
 
