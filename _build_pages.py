@@ -445,6 +445,10 @@ PRODUCT_APPS = {
     'neo-gel-901':      ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes','priming'],
     'neo-dyne':         ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes','priming'],
     'dyno-power-90':    ['surface-mining','underground','quarrying','tunnelling','wet-holes','priming'],
+    'neo-blast':        ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes','priming'],
+    'neo-gel-90':       ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes','priming'],
+    'neo-base':         ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes'],
+    'neo-column':       ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes'],
     'neo-e-det':        ['surface-mining','underground','quarrying','construction'],
     'neo-cord':         ['priming','wet-holes'],
     'neo-det-combidet': ['surface-mining','underground','quarrying','construction'],
@@ -749,7 +753,7 @@ RICH = {
   # ---------------------------------------------------------------- emulsion
   'neo-prime': {
     'name': 'NEO PRIME', 'cat': 'emulsion',
-    'card': 'Cap-sensitive, large-diameter emulsion — our highest weight strength (RWS 118%, VOD 4400 m/s) for priming and column charging.',
+    'card': 'Cap-sensitive, large-diameter emulsion with very high weight strength (RWS 118%, VOD 4400 m/s) for priming and column charging.',
     'tagline': 'High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.',
     'meta': 'NEO PRIME — high-strength, cap-sensitive packaged emulsion explosive from SBL Energy for priming '
             'and column charging in surface mining, underground, quarrying and tunnelling.',
@@ -842,6 +846,109 @@ RICH = {
     'specs_note': ANFO_NOTE,
     'use_cases': ['Priming &amp; initiating ANFO columns','Hard-rock surface mining','Underground operations',
                   'Quarrying','Tunnelling','Wet &amp; water-logged boreholes'],
+  },
+  'neo-blast': {
+    'name': 'NEO BLAST', 'cat': 'emulsion',
+    'card': 'Cap-sensitive, large-diameter emulsion (RWS 120%, VOD 4200 m/s) for priming and column charging.',
+    'tagline': 'High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.',
+    'meta': 'NEO BLAST — high-strength, cap-sensitive large-diameter packaged emulsion explosive from SBL Energy '
+            'for priming and column charging in surface mining, underground, quarrying and tunnelling.',
+    'intro': [
+      'NEO BLAST is a high-strength, cap-sensitive large-diameter packaged emulsion explosive with a firm, '
+      'putty-like consistency. It is sensitised using chemical gassing, microspheres, or a combination of both, '
+      'providing a stable and reliable energy output, while its emulsion matrix offers excellent water resistance '
+      'for dependable performance in wet or partially flooded boreholes.',
+      'NEO BLAST is designed for priming duties as well as column charging in surface mining, underground operations, '
+      'quarrying, tunnelling and general construction blasting. Its high detonation velocity makes it highly effective '
+      'for initiating ANFO columns and other non-cap-sensitive bulk or packaged explosives. The cartridges are packed '
+      'in durable, tear-resistant film that maintains shape during handling and ensures stability during water rise.',
+    ],
+    'specs': [
+      ('Density', '1.2 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '4200 &plusmn; 500', 'm/s'),
+      ('Relative Weight Strength', '120', '%'),
+      ('Relative Bulk Strength', '169', '%'),
+    ],
+    'specs_note': ANFO_NOTE, 'use_cases': EMUL_USE,
+  },
+  'neo-gel-90': {
+    'name': 'NEO GEL 90', 'cat': 'emulsion',
+    'card': 'Cap-sensitive, small-diameter emulsion (RWS 119%, VOD 4400 m/s) for priming and column work.',
+    'tagline': 'High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.',
+    'meta': 'NEO GEL 90 — high-strength, cap-sensitive small-diameter packaged emulsion explosive from SBL Energy '
+            'for priming and column charging in surface mining, underground, quarrying and tunnelling.',
+    'intro': [
+      'NEO GEL 90 is a high-strength, cap-sensitive small-diameter packaged emulsion explosive with a firm, '
+      'putty-like consistency. It is sensitised using chemical gassing, microspheres, or a combination of both, '
+      'providing a stable and reliable energy output, while its emulsion matrix offers excellent water resistance '
+      'for dependable performance in wet or partially flooded boreholes.',
+      'NEO GEL 90 is designed for priming duties as well as column charging in surface mining, underground operations, '
+      'quarrying, tunnelling and general construction blasting. Its high detonation velocity makes it highly effective '
+      'for initiating ANFO columns and other non-cap-sensitive bulk or packaged explosives. The small-diameter '
+      'cartridges are packed in durable, tear-resistant film that maintains shape during handling and ensures '
+      'stability during water rise.',
+    ],
+    'specs': [
+      ('Density', '1.2 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '4400 &plusmn; 200', 'm/s'),
+      ('Relative Weight Strength', '119', '%'),
+      ('Relative Bulk Strength', '168', '%'),
+    ],
+    'specs_note': ANFO_NOTE, 'use_cases': EMUL_USE,
+  },
+  'neo-base': {
+    'name': 'NEO BASE', 'cat': 'emulsion',
+    'card': 'Booster-sensitive, large-diameter column emulsion (RWS 80%, VOD 4000 m/s) — run with a cap-sensitive primer or booster.',
+    'tagline': 'Booster-sensitive packaged emulsion explosive for column and base charging.',
+    'meta': 'NEO BASE — booster-sensitive, large-diameter packaged emulsion explosive from SBL Energy for column '
+            'and base charging in surface mining, underground, quarrying and tunnelling.',
+    'intro': [
+      'NEO BASE is a high-strength, booster-sensitive (non-cap-sensitive) large-diameter packaged emulsion explosive '
+      'with a firm, putty-like consistency. It is sensitised using chemical gassing, microspheres, or a combination of '
+      'both, providing a stable and reliable energy output, while its emulsion matrix offers excellent water resistance '
+      'for dependable performance in wet or partially flooded boreholes.',
+      'NEO BASE is designed as a column and base charge in surface mining, underground operations, quarrying, '
+      'tunnelling and general construction blasting. As a non-cap-sensitive explosive it must be initiated with a '
+      'cap-sensitive primer or booster charge, and its high detonation velocity makes it effective alongside ANFO and '
+      'other bulk or packaged explosives. The cartridges are packed in durable, tear-resistant film that maintains '
+      'shape during handling and ensures stability during water rise.',
+    ],
+    'specs': [
+      ('Density', '1.2 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '4000 &plusmn; 300', 'm/s'),
+      ('Relative Weight Strength', '80', '%'),
+      ('Relative Bulk Strength', '115', '%'),
+    ],
+    'specs_note': ANFO_NOTE,
+    'use_cases': ['Column &amp; base charging','Surface mining','Underground operations','Quarrying',
+                  'Tunnelling','Wet &amp; water-logged boreholes'],
+  },
+  'neo-column': {
+    'name': 'NEO COLUMN', 'cat': 'emulsion',
+    'card': 'Booster-sensitive, large-diameter column emulsion (RWS 78%, VOD 3900 m/s) — run with a cap-sensitive primer or booster.',
+    'tagline': 'Booster-sensitive packaged emulsion explosive for column and base charging.',
+    'meta': 'NEO COLUMN — booster-sensitive, large-diameter packaged emulsion explosive from SBL Energy for column '
+            'and base charging in surface mining, underground, quarrying and tunnelling.',
+    'intro': [
+      'NEO COLUMN is a high-strength, booster-sensitive (non-cap-sensitive) large-diameter packaged emulsion explosive '
+      'with a firm, putty-like consistency. It is sensitised using chemical gassing, microspheres, or a combination of '
+      'both, providing a stable and reliable energy output, while its emulsion matrix offers excellent water resistance '
+      'for dependable performance in wet or partially flooded boreholes.',
+      'NEO COLUMN is designed as a column charge in surface mining, underground operations, quarrying, tunnelling and '
+      'general construction blasting. As a non-cap-sensitive explosive it must be initiated with a cap-sensitive primer '
+      'or booster charge, and its high detonation velocity makes it effective alongside ANFO and other bulk or packaged '
+      'explosives. The cartridges are packed in durable, tear-resistant film that maintains shape during handling and '
+      'ensures stability during water rise.',
+    ],
+    'specs': [
+      ('Density', '1.2 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '3900 &plusmn; 300', 'm/s'),
+      ('Relative Weight Strength', '78', '%'),
+      ('Relative Bulk Strength', '110', '%'),
+    ],
+    'specs_note': ANFO_NOTE,
+    'use_cases': ['Column charging','Surface mining','Underground operations','Quarrying',
+                  'Tunnelling','Wet &amp; water-logged boreholes'],
   },
   # ---------------------------------------------------------------- electronic
   'neo-e-det': {
