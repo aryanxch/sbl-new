@@ -669,7 +669,8 @@ GROUP_NAME = {'non-electric':'Initiating Systems','copper-delay':'Initiating Sys
               'petn':'Chemicals','ammonium-nitrate':'Chemicals'}
 
 def build_stub(slug, name, cat, desc):
-    img = IMG_BY_CAT[cat]
+    own = 'images/products/%s.png' % slug
+    img = own if os.path.exists(own) else IMG_BY_CAT[cat]
     back = CAT_PAGE[cat]
     grp_page = GROUP_PAGE[cat]
     grp_name = GROUP_NAME[cat]
