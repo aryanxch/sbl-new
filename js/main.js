@@ -33,7 +33,8 @@ const statObserver = new IntersectionObserver((entries) => {
     if (entry.isIntersecting) {
       const el = entry.target;
       const target = parseInt(el.dataset.target, 10);
-      const suffix = el.textContent.includes('%') ? '%' : '+';
+      // data-suffix wins (e.g. "M+", "+"); else infer % vs +.
+      const suffix = el.dataset.suffix != null ? el.dataset.suffix : (el.textContent.includes('%') ? '%' : '+');
       let current = 0;
       const duration = 1800;
       const start = performance.now();
@@ -41,7 +42,7 @@ const statObserver = new IntersectionObserver((entries) => {
         const progress = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
         current = Math.floor(eased * target);
-        el.textContent = current + (progress === 1 ? suffix : '');
+        el.textContent = current.toLocaleString('en-US') + (progress === 1 ? suffix : '');
         if (progress < 1) requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);

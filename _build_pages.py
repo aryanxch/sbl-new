@@ -47,9 +47,6 @@ MEGA = '''          <div class="dropdown wide mega">
             <div class="drop-col">
               <a href="defense.html" class="drop-head">Defense</a>
               <a href="defense.html?filter=tnt">TNT</a>
-              <a href="defense.html?filter=hmx">HMX</a>
-              <a href="defense.html?filter=rdx">RDX</a>
-              <a href="defense.html?filter=pyro">Pyro Devices</a>
             </div>
             <div class="drop-col">
               <a href="chemicals.html" class="drop-head">Chemicals</a>
@@ -57,6 +54,19 @@ MEGA = '''          <div class="dropdown wide mega">
               <a href="chemicals.html?filter=ammonium-nitrate">Ammonium Nitrate</a>
             </div>
           </div>'''
+
+# Defense dropdown column before HMX/RDX/Pyro Devices were removed — swapped on already-built static pages.
+OLD_DEFENSE_COL = '''            <div class="drop-col">
+              <a href="defense.html" class="drop-head">Defense</a>
+              <a href="defense.html?filter=tnt">TNT</a>
+              <a href="defense.html?filter=hmx">HMX</a>
+              <a href="defense.html?filter=rdx">RDX</a>
+              <a href="defense.html?filter=pyro">Pyro Devices</a>
+            </div>'''
+NEW_DEFENSE_COL = '''            <div class="drop-col">
+              <a href="defense.html" class="drop-head">Defense</a>
+              <a href="defense.html?filter=tnt">TNT</a>
+            </div>'''
 
 # Previous mega (slurry-first, non-electric-first) — replaced across already-built pages.
 OLD_MEGA4 = '''          <div class="dropdown wide mega">
@@ -189,7 +199,7 @@ def navbar(active_products=True):
           </div>
         </li>
         <li class="has-drop">
-          <a href="#"''' + cls + ''' >Products <span class="caret">▾</span></a>
+          <a href="packaged-explosives.html"''' + cls + ''' >Products <span class="caret">▾</span></a>
 ''' + MEGA + '''
         </li>
         <li><a href="services.html">Services</a></li>
@@ -233,6 +243,8 @@ FOOTER = '''<footer class="footer">
         <a href="packaged-explosives.html">Packaged Explosives</a>
         <a href="bulk.html">Bulk Explosives</a>
         <a href="initiating-systems.html">Initiating Systems</a>
+        <a href="defense.html">Defense</a>
+        <a href="chemicals.html">Chemicals</a>
       </div>
       <div class="footer-col">
         <h4>Reach Us</h4>
@@ -244,8 +256,6 @@ FOOTER = '''<footer class="footer">
     <div class="footer-bottom">
       <p>© 2026 SBL Energy Limited. All rights reserved.</p>
       <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Use</a>
         <a href="contact.html">Contact</a>
       </div>
     </div>
@@ -270,7 +280,7 @@ def head(title, desc):
 
 FILTER_JS = '''<script>
 (function(){
-  var qsa = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var qsa = function(s, root){ return Array.prototype.slice.call((root || document).querySelectorAll(s)); };
   // [checkbox attribute, card attribute, URL param]
   var GROUPS = [
     ['data-filter','data-cat','filter'],
@@ -279,6 +289,7 @@ FILTER_JS = '''<script>
     ['data-dia','data-dia','dia']
   ];
   var cards = qsa('.prod-card');
+  var groups = qsa('.cat-group');
   var empty = document.querySelector('.catalog-empty');
   var clear = document.getElementById('clearFilters');
   var allInputs = [];
@@ -295,6 +306,10 @@ FILTER_JS = '''<script>
       });
       card.classList.toggle('is-hidden', !ok);
       if(ok) shown++;
+    });
+    groups.forEach(function(group){
+      var visible = qsa('.prod-card', group).some(function(card){ return !card.classList.contains('is-hidden'); });
+      group.classList.toggle('is-hidden', !visible);
     });
     if(empty) empty.classList.toggle('show', shown === 0);
     if(clear) clear.classList.toggle('show', active > 0);
@@ -360,8 +375,7 @@ PRODUCTS_INIT = [
     ('neo-det-dth','NEO DET DTH','non-electric','High-strength down-the-hole millisecond-delay detonator for in-hole initiation.'),
     ('neo-det-lpsp','NEO DET LP/SP','non-electric','In-hole delay detonator offered in Long-Period (LP) and Short-Period (SP) delay series.'),
     ('neo-det-stld','NEO DET STLD','non-electric','Surface trunkline delay detonator for hole-to-hole and row-to-row surface sequencing.'),
-    ('neo-cdd','NEO CDD','copper-delay','Copper-shell delay detonator for delay initiation in underground coal mines.'),
-    ('neo-ced','NEO CED','copper-delay','Copper electric detonator variant for gassy underground conditions.'),
+    ('copper-delay-detonator','COPPER DELAY DETONATOR','copper-delay','Copper-shell electric delay detonator for delay initiation in gassy underground coal mines.'),
     ('neo-od','NEO OD','ordinary','Aluminium plain ordinary detonator of No. 8 strength for cap-sensitive explosives.'),
     ('neo-boost','NEO BOOST','cast-booster','High-density PETN + TNT cast booster — available in 25, 100, 250 and 500 g sizes.'),
     ('neo-primex','NEO PRIMEX','cast-booster','High-density PETN–TNT cast booster for initiating ANFO, emulsions, watergels and other blasting agents.'),
@@ -387,7 +401,6 @@ PRODUCTS_PKG = [
     ('neo-gel-901',      'NEO GEL 901',        'emulsion','Cartridged emulsion explosive.'),
     ('neo-dyne',         'NEO DYNE',           'emulsion','Cartridged emulsion explosive.'),
     ('dyno-power-90',    'DYNO POWER-90',      'emulsion','High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.'),
-    ('neo-gel-90',       'NEO GEL 90',         'emulsion','Cap-sensitive, small-diameter cartridged emulsion explosive.'),
     ('neo-blast',        'NEO BLAST',          'emulsion','Cap-sensitive, large-diameter cartridged emulsion explosive.'),
     ('neo-base',         'NEO BASE',           'emulsion','Booster-sensitive, large-diameter cartridged emulsion explosive.'),
     ('neo-column',       'NEO COLUMN',         'emulsion','Booster-sensitive, large-diameter cartridged emulsion explosive.'),
@@ -401,15 +414,9 @@ PRODUCTS_PKG = [
 DEF_IMG = 'images/products/defense-placeholder.svg'
 TYPES_DEF = [
     ('tnt',  'TNT',          DEF_IMG),
-    ('hmx',  'HMX',          DEF_IMG),
-    ('rdx',  'RDX',          DEF_IMG),
-    ('pyro', 'Pyro Devices', DEF_IMG),
 ]
 PRODUCTS_DEF = [
     ('tnt',          'TNT',          'tnt', 'Trinitrotoluene — high-explosive fill for defence applications.'),
-    ('hmx',          'HMX',          'hmx', 'High-melting explosive (octogen) for defence applications.'),
-    ('rdx',          'RDX',          'rdx', 'Research Department Explosive (cyclonite) for defence applications.'),
-    ('pyro-devices', 'Pyro Devices', 'pyro','Pyrotechnic devices for defence applications.'),
 ]
 
 CHEM_IMG = 'images/products/chemical-placeholder.svg'
@@ -446,7 +453,6 @@ PRODUCT_APPS = {
     'neo-dyne':         ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes','priming'],
     'dyno-power-90':    ['surface-mining','underground','quarrying','tunnelling','wet-holes','priming'],
     'neo-blast':        ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes','priming'],
-    'neo-gel-90':       ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes','priming'],
     'neo-base':         ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes'],
     'neo-column':       ['surface-mining','underground','quarrying','tunnelling','construction','wet-holes'],
     'neo-e-det':        ['surface-mining','underground','quarrying','construction'],
@@ -470,7 +476,6 @@ PRODUCT_CLASS = {
     'neo-prime':        ('cap', 'large'),
     'neo-blast':        ('cap', 'large'),
     'neo-gel-901':      ('cap', 'small'),
-    'neo-gel-90':       ('cap', 'small'),
     'neo-dyne':         ('cap', 'small'),
     'dyno-power-90':    ('cap', 'small'),
     'neo-column':       ('booster', 'large'),
@@ -565,10 +570,54 @@ def class_sidebar(products):
     return (group('Sensitivity', 'sens', SENS_TYPES, sens_c) + '\n'
           + group('Diameter', 'dia', DIA_TYPES, dia_c)).strip('\n')
 
+# ---------------------------------------------------------------- category families
+# Product-family group headers shown on grouped catalog pages (Packaged Explosives).
+# (cat key, heading, description) — order controls display order and 01/02/03 numbering.
+PKG_GROUPS = [
+    ('emulsion', 'Emulsion Explosives',
+     'Water-resistant, high weight-strength cartridged emulsions for surface and underground blasting — cap- and booster-sensitive grades across large and small diameters.'),
+    ('slurry', 'Slurry Explosives',
+     'Cartridged water-gel (slurry) explosives offering high bulk strength in booster- and cap-sensitive grades for large-diameter surface and underground holes.'),
+    ('seismic', 'Seismic Explosives',
+     'Compact, high-VOD cartridged explosives purpose-built for seismic exploration and geophysical survey work.'),
+]
+
+def grouped_catalog(groups, products):
+    """Catalog body split into product-family sections with headers (used on packaged page)."""
+    blocks = []
+    for i, (key, heading, desc) in enumerate(groups, 1):
+        items = [p for p in products if p[2] == key]
+        cards = '\n'.join(product_card(*p) for p in items)
+        n = len(items)
+        noun = 'product' if n == 1 else 'products'
+        blocks.append('''        <div class="cat-group" data-section="''' + key + '''">
+          <div class="cat-group-head">
+            <div class="cat-group-index">''' + '%02d' % i + '''</div>
+            <div class="cat-group-text">
+              <div class="cat-group-eyebrow"><span class="tag-line"></span> Product Family</div>
+              <h2>''' + heading + '''</h2>
+              <p>''' + desc + '''</p>
+            </div>
+            <span class="cat-group-count"><strong>''' + str(n) + '''</strong> ''' + noun + '''</span>
+          </div>
+          <div class="prod-card-grid">
+''' + cards + '''
+          </div>
+        </div>''')
+    return '\n\n'.join(blocks)
+
 # ---------------------------------------------------------------- category page
 def build_category(filename, title, hero_title, hero_sub, hero_bg, tag, active_tab,
-                   types, products, cta_h2, cta_p, meta):
-    cards = '\n'.join(product_card(*p) for p in products)
+                   types, products, cta_h2, cta_p, meta, groups=None):
+    if groups:
+        catalog_main = grouped_catalog(groups, products) + '''
+
+        <div class="catalog-empty">No products match the selected filters.</div>'''
+    else:
+        catalog_main = '''        <div class="prod-card-grid">
+''' + '\n'.join(product_card(*p) for p in products) + '''
+        </div>
+        <div class="catalog-empty">No products match the selected filters.</div>'''
     html = head(title, meta) + '''
 
 ''' + TOPBAR + '''
@@ -607,15 +656,12 @@ def build_category(filename, title, hero_title, hero_sub, hero_bg, tag, active_t
 ''' + filter_sidebar(types, products) + '''
         </div>
 ''' + class_sidebar(products) + '''
-''' + apps_sidebar(products) + '''
+''' + (apps_sidebar(products) if groups else '') + '''
         <span class="filter-clear" id="clearFilters">Clear filters ✕</span>
       </aside>
 
       <div class="catalog-main">
-        <div class="prod-card-grid">
-''' + cards + '''
-        </div>
-        <div class="catalog-empty">No products match the selected filters.</div>
+''' + catalog_main + '''
       </div>
     </div>
   </div>
@@ -868,31 +914,6 @@ RICH = {
       ('Velocity of Detonation', '4200 &plusmn; 500', 'm/s'),
       ('Relative Weight Strength', '120', '%'),
       ('Relative Bulk Strength', '169', '%'),
-    ],
-    'specs_note': ANFO_NOTE, 'use_cases': EMUL_USE,
-  },
-  'neo-gel-90': {
-    'name': 'NEO GEL 90', 'cat': 'emulsion',
-    'card': 'Cap-sensitive, small-diameter emulsion (RWS 119%, VOD 4400 m/s) for priming and column work.',
-    'tagline': 'High-strength, cap-sensitive packaged emulsion explosive for priming and column charging.',
-    'meta': 'NEO GEL 90 — high-strength, cap-sensitive small-diameter packaged emulsion explosive from SBL Energy '
-            'for priming and column charging in surface mining, underground, quarrying and tunnelling.',
-    'intro': [
-      'NEO GEL 90 is a high-strength, cap-sensitive small-diameter packaged emulsion explosive with a firm, '
-      'putty-like consistency. It is sensitised using chemical gassing, microspheres, or a combination of both, '
-      'providing a stable and reliable energy output, while its emulsion matrix offers excellent water resistance '
-      'for dependable performance in wet or partially flooded boreholes.',
-      'NEO GEL 90 is designed for priming duties as well as column charging in surface mining, underground operations, '
-      'quarrying, tunnelling and general construction blasting. Its high detonation velocity makes it highly effective '
-      'for initiating ANFO columns and other non-cap-sensitive bulk or packaged explosives. The small-diameter '
-      'cartridges are packed in durable, tear-resistant film that maintains shape during handling and ensures '
-      'stability during water rise.',
-    ],
-    'specs': [
-      ('Density', '1.2 &plusmn; 0.05', 'g/cc'),
-      ('Velocity of Detonation', '4400 &plusmn; 200', 'm/s'),
-      ('Relative Weight Strength', '119', '%'),
-      ('Relative Bulk Strength', '168', '%'),
     ],
     'specs_note': ANFO_NOTE, 'use_cases': EMUL_USE,
   },
@@ -1167,6 +1188,234 @@ RICH = {
     'use_cases': ['Initiating ANFO','Initiating emulsions &amp; watergels','Priming bulk explosives',
                   'Surface mining','Underground operations'],
   },
+  'neo-boost': {
+    'name': 'NEO BOOST', 'cat': 'cast-booster',
+    'card': 'Cap-sensitive emulsion booster (density 1.55 g/cc, VOD 7000 m/s) for priming ANFO, cartridged and bulk explosives.',
+    'tagline': 'High-strength emulsion booster for reliable initiation of ANFO, emulsions and other blasting agents.',
+    'meta': 'NEO BOOST — high-strength emulsion booster from SBL Energy delivering high detonation velocity and density '
+            'to reliably initiate ANFO, watergels, packaged emulsions and other non-cap-sensitive blasting agents.',
+    'intro': [
+      'NEO BOOST is a high-strength emulsion booster manufactured from a high-energy emulsion explosive composition '
+      'enclosed within a durable polymer shell. It is designed to deliver the high initiation energy required to '
+      'reliably initiate bulk explosives, ANFO, watergels, packaged emulsions and other non-cap-sensitive blasting agents.',
+      'The booster incorporates one or more longitudinal tunnels to accommodate a detonator or detonating cord, ensuring '
+      'secure placement and efficient transfer of initiation energy. Its robust construction provides excellent water '
+      'resistance and mechanical integrity, making it suitable for surface mining, underground mining, quarrying, '
+      'tunnelling and civil construction.',
+    ],
+    'specs': [
+      ('Density', '1.55 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '7000 &plusmn; 500', 'm/s'),
+      ('Cap Sensitivity', 'No. 6', 'detonator'),
+      ('Available Sizes', '100&ndash;400', 'g'),
+    ],
+    'specs_note': 'Cap-sensitive (No. 6 detonator &amp; detonating fuse); available in 100, 150, 250 and 400&nbsp;g cartridges, 25&nbsp;kg per box. Full details are in the datasheet.',
+    'use_cases': ['Priming ANFO','Initiating emulsions &amp; watergels','Priming bulk &amp; cartridged explosives',
+                  'Surface &amp; underground mining','Quarrying &amp; tunnelling','Civil construction'],
+  },
+  # ---------------------------------------------------------------- copper delay detonator
+  'copper-delay-detonator': {
+    'name': 'COPPER DELAY DETONATOR', 'cat': 'copper-delay',
+    'card': 'Copper-shell electric delay detonator, available in permitted and non-permitted grades, for delay initiation in underground blasting.',
+    'tagline': 'Copper-shell electric delay detonator for delay initiation in underground coal and metal mines.',
+    'meta': 'Copper Delay Detonator from SBL Energy — a copper-shell electric delay detonator with a PETN base charge and '
+            'PVC-coated leg wires, offered in permitted and non-permitted grades for delay initiation in underground blasting.',
+    'intro': [
+      'The Copper Delay Detonator is made of a copper shell filled with a PETN base charge combined with a primary '
+      'charge. The shell is crimped onto a pair of PVC-coated leg wires fitted to an electric fuse head, providing '
+      'dependable electric delay initiation.',
+      'It offers a reliable means of delay initiation in underground mines, creating the free face required for '
+      'successive rows of holes in solid blasting. It is available in a permitted grade for gassy underground coal '
+      'mines — where safety against firedamp and coal dust is essential — and a non-permitted grade for general '
+      'underground blasting.',
+    ],
+    'specs': [
+      ('Shell Material', 'Copper', ''),
+      ('Base Charge', 'PETN', ''),
+      ('Initiation', 'Electric', ''),
+      ('Grades', 'Permitted / Non-permitted', ''),
+    ],
+    'specs_note': 'Supplied in permitted and non-permitted grades across a range of bunch and box sizes (25 detonators per bunch). Full delay range and packaging are in the datasheet.',
+    'use_cases': ['Underground coal mines','Underground metal mines','Solid blasting','Delay initiation','Gassy underground conditions'],
+  },
+  # ---------------------------------------------------------------- ordinary detonator
+  'neo-od': {
+    'name': 'NEO OD', 'cat': 'ordinary',
+    'card': 'Aluminium plain (No. 8) ordinary detonator, initiated by safety fuse, for cap-sensitive explosives in dry-hole blasting.',
+    'tagline': 'Aluminium plain ordinary detonator of No. 8 strength, initiated by safety fuse.',
+    'meta': 'NEO OD — aluminium plain ordinary detonator from SBL Energy of No. 8 strength, non-electric '
+            'and initiated by safety fuse for cap-sensitive explosives in dry-hole blasting.',
+    'intro': [
+      'NEO OD is an aluminium plain ordinary detonator, non-electric in nature and commonly used with safety fuse. Of '
+      'No. 8 strength, it ensures effective initiation of cap-sensitive explosives and is fired when a length of safety '
+      'fuse is inserted into the open end of the cap and crimped in place.',
+      'The detonator has a shell length of 37&nbsp;mm and a diameter of 3.7&nbsp;mm, and is manufactured in a modern '
+      'plant using highly sophisticated techniques. It is most effective in dry holes and is suited to boulder blasting, '
+      'secondary blasting and safe initiation in quarry blasting, non-gassy underground and opencast mines, surface '
+      'excavation, well sinking and civil works.',
+    ],
+    'specs': [
+      ('Strength', 'No. 8', ''),
+      ('Shell Length', '37', 'mm'),
+      ('Shell Diameter', '3.7', 'mm'),
+      ('Initiation', 'Safety Fuse', ''),
+    ],
+    'specs_note': 'Aluminium plain (non-electric) detonator; 100 detonators per box and 10,000 per wooden case. Full packaging table is in the datasheet.',
+    'use_cases': ['Boulder blasting','Secondary blasting','Quarry blasting','Non-gassy underground &amp; opencast mines',
+                  'Surface excavation &amp; well sinking','Road construction &amp; civil works'],
+  },
+  # ---------------------------------------------------------------- slurry (water-gel)
+  'neo-prime-special': {
+    'name': 'NEO PRIME - SPECIAL', 'cat': 'slurry',
+    'card': 'Cap-sensitive, large-diameter water-gel (slurry) explosive (RWS 90%, VOD 4100 m/s) for priming and column charging.',
+    'tagline': 'Cap-sensitive cartridged slurry (water-gel) explosive for priming and column charging.',
+    'meta': 'NEO PRIME - SPECIAL — cap-sensitive, water-resistant cartridged slurry (water-gel) explosive from SBL Energy '
+            'for priming and column charging in mining, quarrying and civil construction blasting.',
+    'intro': [
+      'NEO PRIME - SPECIAL is a cap-sensitive, water-resistant slurry (water-gel) explosive formulated for mining, '
+      'quarrying and civil construction blasting. It consists of an oxidiser-rich aqueous gel matrix — ammonium nitrate, '
+      'sodium nitrate, fuel components and sensitisers within a cross-linked structure — that provides a stable explosive '
+      'composition suitable for a wide range of blasting conditions.',
+      'Being cap-sensitive, it can be initiated directly with a No. 8 strength detonator, eliminating the need for a '
+      'booster in many applications and making it suitable for use as a primer. It is intended for both dry and wet '
+      'boreholes and can be used as a primer or as a column charge, depending on blast design requirements.',
+    ],
+    'specs': [
+      ('Density', '1.18 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '4100 &plusmn; 300', 'm/s'),
+      ('Relative Weight Strength', '90', '%'),
+      ('Relative Bulk Strength', '125', '%'),
+    ],
+    'specs_note': ANFO_NOTE,
+    'use_cases': ['Priming &amp; initiation','Column charging','Surface mining','Quarrying',
+                  'Civil construction blasting','Wet &amp; water-logged boreholes'],
+  },
+  'neo-blast-special': {
+    'name': 'NEO BLAST - SPECIAL', 'cat': 'slurry',
+    'card': 'Cap-sensitive, large-diameter water-gel (slurry) explosive (RWS 88%, VOD 3900 m/s) for priming and column charging.',
+    'tagline': 'Cap-sensitive cartridged slurry (water-gel) explosive for priming and column charging.',
+    'meta': 'NEO BLAST - SPECIAL — cap-sensitive, water-resistant cartridged slurry (water-gel) explosive from SBL Energy '
+            'for priming and column charging in mining, quarrying and civil construction blasting.',
+    'intro': [
+      'NEO BLAST - SPECIAL is a cap-sensitive, water-resistant slurry (water-gel) explosive formulated for mining, '
+      'quarrying and civil construction blasting. It consists of an oxidiser-rich aqueous gel matrix — ammonium nitrate, '
+      'sodium nitrate, fuel components and sensitisers within a cross-linked structure — that provides a stable explosive '
+      'composition suitable for a wide range of blasting conditions.',
+      'Being cap-sensitive, it can be initiated directly with a No. 8 strength detonator, eliminating the need for a '
+      'booster in many applications and making it suitable for use as a primer. It is intended for both dry and wet '
+      'boreholes and can be used as a primer or as a column charge, depending on blast design requirements.',
+    ],
+    'specs': [
+      ('Density', '1.15 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '3900 &plusmn; 300', 'm/s'),
+      ('Relative Weight Strength', '88', '%'),
+      ('Relative Bulk Strength', '119', '%'),
+    ],
+    'specs_note': ANFO_NOTE,
+    'use_cases': ['Priming &amp; initiation','Column charging','Surface mining','Quarrying',
+                  'Civil construction blasting','Wet &amp; water-logged boreholes'],
+  },
+  'neo-base-special': {
+    'name': 'NEO BASE - SPECIAL', 'cat': 'slurry',
+    'card': 'Booster-sensitive, large-diameter water-gel (slurry) column explosive (RWS 75%, VOD 4000 m/s) — run with a cap-sensitive primer or booster.',
+    'tagline': 'Booster-sensitive (non-cap) cartridged slurry (water-gel) explosive for column charging.',
+    'meta': 'NEO BASE - SPECIAL — booster-sensitive (non-cap) water-resistant cartridged slurry (water-gel) explosive '
+            'from SBL Energy for column charging in mining, quarrying and civil construction blasting.',
+    'intro': [
+      'NEO BASE - SPECIAL is a non-cap-sensitive, water-resistant slurry (water-gel) explosive formulated for mining, '
+      'quarrying and civil construction blasting. It consists of an oxidiser-rich aqueous gel matrix — ammonium nitrate, '
+      'sodium nitrate, fuel components and sensitisers within a cross-linked structure — that provides a stable explosive '
+      'composition suitable for a wide range of blasting conditions.',
+      'Being non-cap-sensitive, it must be initiated with a suitable primer or booster. It is designed as a column charge '
+      'in both dry and wet boreholes and is compatible with bulk and packaged blasting systems, particularly in medium to '
+      'large diameter boreholes where primer-assisted initiation of the explosive column is employed.',
+    ],
+    'specs': [
+      ('Density', '1.18 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '4000 &plusmn; 400', 'm/s'),
+      ('Relative Weight Strength', '75', '%'),
+      ('Relative Bulk Strength', '105', '%'),
+    ],
+    'specs_note': ANFO_NOTE,
+    'use_cases': ['Column charging','Surface mining','Quarrying','Civil construction blasting',
+                  'Wet &amp; water-logged boreholes'],
+  },
+  'neo-col-special': {
+    'name': 'NEO COL - SPECIAL', 'cat': 'slurry',
+    'card': 'Booster-sensitive, large-diameter water-gel (slurry) column explosive (RWS 80%, VOD 3900 m/s) — run with a cap-sensitive primer or booster.',
+    'tagline': 'Booster-sensitive (non-cap) cartridged slurry (water-gel) explosive for column charging.',
+    'meta': 'NEO COL - SPECIAL — booster-sensitive (non-cap) water-resistant cartridged slurry (water-gel) explosive '
+            'from SBL Energy for column charging in mining, quarrying and civil construction blasting.',
+    'intro': [
+      'NEO COL - SPECIAL is a non-cap-sensitive, water-resistant slurry (water-gel) explosive formulated for mining, '
+      'quarrying and civil construction blasting. It consists of an oxidiser-rich aqueous gel matrix — ammonium nitrate, '
+      'sodium nitrate, fuel components and sensitisers within a cross-linked structure — that provides a stable explosive '
+      'composition suitable for a wide range of blasting conditions.',
+      'Being non-cap-sensitive, it must be initiated with a suitable primer or booster. It is designed as a column charge '
+      'in both dry and wet boreholes and is compatible with bulk and packaged blasting systems, particularly in medium to '
+      'large diameter boreholes where primer-assisted initiation of the explosive column is employed.',
+    ],
+    'specs': [
+      ('Density', '1.15 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '3900 &plusmn; 300', 'm/s'),
+      ('Relative Weight Strength', '80', '%'),
+      ('Relative Bulk Strength', '108', '%'),
+    ],
+    'specs_note': ANFO_NOTE,
+    'use_cases': ['Column charging','Surface mining','Quarrying','Civil construction blasting',
+                  'Wet &amp; water-logged boreholes'],
+  },
+  # ---------------------------------------------------------------- seismic
+  'neo-gel-90-cpt': {
+    'name': 'NEO GEL-90 CPT', 'cat': 'seismic',
+    'card': 'Seismic emulsion explosive (VOD 5000 m/s, density 1.2 g/cc) engineered to sink in water-filled shot holes for exploration.',
+    'tagline': 'Seismic emulsion explosive for seismic exploration and geophysical survey work.',
+    'meta': 'NEO GEL-90 CPT — seismic emulsion explosive from SBL Energy (PESO 915) with high VOD and excellent water '
+            'resistance, density-engineered to sink in water-filled shot holes for seismic exploration.',
+    'intro': [
+      'NEO GEL-90 CPT is a high-strength seismic emulsion explosive developed for seismic exploration and geophysical '
+      'survey operations. It combines a high velocity of detonation with excellent water resistance, and its density is '
+      'engineered so the cartridge sinks in water — enabling effective placement in water-filled shot holes.',
+      'Supplied in couplable plastic tubes for easy handling and reliable field deployment, it is initiated using a '
+      'No. 8 strength seismic detonator. Cartridges are available in 50, 63 and 76&nbsp;mm diameters, with a maximum '
+      'sleeping time of approximately 8 weeks subject to site conditions.',
+    ],
+    'specs': [
+      ('Density', '1.2 &plusmn; 0.05', 'g/cc'),
+      ('Velocity of Detonation', '5000', 'm/s'),
+      ('Hydrostatic Head', '58', 'm'),
+      ('Cartridge Diameters', '50 / 63 / 76', 'mm'),
+    ],
+    'specs_note': 'PESO Brand ID 915; cartridge weights of 500&nbsp;g, 1000&nbsp;g and 2500&nbsp;g packed in 25&nbsp;kg boxes. Full packaging table is in the datasheet.',
+    'use_cases': ['Seismic exploration','Geophysical surveys','Water-filled shot holes','Land seismic operations'],
+  },
+  # ---------------------------------------------------------------- chemicals
+  'ammonium-nitrate': {
+    'name': 'Ammonium Nitrate', 'cat': 'ammonium-nitrate',
+    'card': 'High-purity ammonium nitrate (HDAN &amp; LDAN) for bulk explosives, ANFO and site-mixed blasting systems.',
+    'tagline': 'High-purity ammonium nitrate in HDAN and LDAN grades for explosive and industrial applications.',
+    'meta': 'Ammonium Nitrate (HDAN &amp; LDAN) from SBL Energy — high-purity, uniformly granulated ammonium nitrate '
+            'for bulk and packaged explosive formulations, ANFO and site-mixed blasting systems.',
+    'intro': [
+      'SBL Energy supplies High Purity Ammonium Nitrate sourced from approved and reputed manufacturers, meeting '
+      'stringent quality and consistency requirements for explosive and industrial applications. It is offered in both '
+      'High Density Ammonium Nitrate (HDAN) and Low Density Ammonium Nitrate (LDAN) grades to suit varied blasting '
+      'system requirements.',
+      'The material is characterised by a uniform granulation / prill structure, controlled density, low impurity '
+      'levels and consistent performance, ensuring reliable downstream processing and predictable blast outcomes. HDAN '
+      'delivers dense, mechanically strong granules for bulk explosive systems and heavy column charges, while LDAN '
+      'provides porous prills with high fuel-oil absorption optimised for ANFO and site-mixed formulations.',
+    ],
+    'specs': [
+      ('Grades', 'HDAN / LDAN', ''),
+      ('Purity (NH4NO3)', '98', '% min'),
+      ('Nitrogen', '34', '% min'),
+      ('Colour', 'White', ''),
+    ],
+    'specs_note': 'Supplied in high-density (HDAN) and low-density (LDAN) grades; full HDAN and LDAN specifications are in the datasheet.',
+    'use_cases': ['Bulk &amp; packaged explosive formulations','ANFO &amp; site-mixed blasting systems',
+                  'Quarrying &amp; opencast mining','Civil infrastructure &amp; controlled blasting'],
+  },
 }
 
 def build_rich(slug, d):
@@ -1297,17 +1546,18 @@ build_category('packaged-explosives.html',
     'OUR PRODUCTS', 'packaged', TYPES_PKG, PRODUCTS_PKG,
     'Need help choosing a packaged explosive?',
     'Our technical team will help you select the right cartridge product for your site.',
-    'Slurry, emulsion and seismic cartridged explosives from SBL Energy — NEO COL, NEO PRIME, NEO GEL and DYNO range.')
+    'Slurry, emulsion and seismic cartridged explosives from SBL Energy — NEO COL, NEO PRIME, NEO GEL and DYNO range.',
+    groups=PKG_GROUPS)
 
 build_category('defense.html',
     'Defense — SBL Energy Limited',
     'Defense',
-    'High-explosive materials and pyrotechnic devices for defence applications.',
+    'High-explosive materials for defence applications.',
     'images/hero/blast-panoramic.jpg',
     'OUR PRODUCTS', 'defense', TYPES_DEF, PRODUCTS_DEF,
     'Looking for defence-grade explosives?',
     'Our technical team will help you with defence material requirements and specifications.',
-    'TNT, HMX, RDX and pyrotechnic devices from SBL Energy — high-explosive materials for defence applications.')
+    'TNT from SBL Energy — high-explosive materials for defence applications.')
 
 build_category('chemicals.html',
     'Chemicals — SBL Energy Limited',
@@ -1352,6 +1602,44 @@ OLD_BLOCK = '''          <div class="dropdown wide">
 OLD_BROCHURE = 'https://www.sblenergy.com/_files/ugd/06db74_7aba56dcc5c9456fbe8bcffc8c9c3cb6.pdf'
 NEW_BROCHURE = 'assets/brochure/sbl-energy-brochure.pdf'
 
+# --- Footer "Products" column: old per-product links → the five category pages (new site). ---
+NEW_FOOT_PROD = '''        <h4>Products</h4>
+        <a href="packaged-explosives.html">Packaged Explosives</a>
+        <a href="bulk.html">Bulk Explosives</a>
+        <a href="initiating-systems.html">Initiating Systems</a>
+        <a href="defense.html">Defense</a>
+        <a href="chemicals.html">Chemicals</a>'''
+OLD_FOOT_PROD_A = '''        <h4>Products</h4>
+        <a href="slurry-explosives.html">Slurry Explosives</a>
+        <a href="emulsion-explosives.html">Emulsion Explosives</a>
+        <a href="bulk-explosives.html">Bulk Explosives</a>
+        <a href="detonating-fuse.html">Detonating Fuse</a>
+        <a href="electronic-detonator.html">Electronic Detonator</a>
+        <a href="cast-booster.html">Cast Booster</a>'''
+OLD_FOOT_PROD_B = '''        <h4>Products</h4>
+        <a href="slurry-explosives.html">Slurry Explosives</a>
+        <a href="emulsion-explosives.html">Emulsion Explosives</a>
+        <a href="#products">Bulk Emulsion</a>
+        <a href="#products">Detonators</a>
+        <a href="detonating-fuse.html">Detonating Fuse</a>
+        <a href="cast-booster.html">Cast Booster</a>'''
+
+# --- Footer bottom links: drop the dead Privacy Policy / Terms of Use anchors. ---
+OLD_FOOT_LINKS = '''      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="contact.html">Contact</a>
+      </div>'''
+NEW_FOOT_LINKS = '''      <div class="footer-links">
+        <a href="contact.html">Contact</a>
+      </div>'''
+
+# --- Nav "Products" parent link → Packaged Explosives page (on hand-maintained static pages). ---
+NEW_PROD_NAV = '<a href="packaged-explosives.html">Products <span class="caret">▾</span></a>'
+OLD_PROD_NAVS = ['<a href="#products">Products <span class="caret">▾</span></a>',
+                 '<a href="#" class="active">Products <span class="caret">▾</span></a>',
+                 '<a href="#">Products <span class="caret">▾</span></a>']
+
 swapped = 0
 for fn in glob.glob('*.html'):
     with open(fn) as f:
@@ -1362,6 +1650,16 @@ for fn in glob.glob('*.html'):
             new = new.replace(old, MEGA)
     if OLD_BROCHURE in new:
         new = new.replace(OLD_BROCHURE, NEW_BROCHURE)
+    if OLD_DEFENSE_COL in new:
+        new = new.replace(OLD_DEFENSE_COL, NEW_DEFENSE_COL)
+    for old in (OLD_FOOT_PROD_A, OLD_FOOT_PROD_B):
+        if old in new:
+            new = new.replace(old, NEW_FOOT_PROD)
+    if OLD_FOOT_LINKS in new:
+        new = new.replace(OLD_FOOT_LINKS, NEW_FOOT_LINKS)
+    for old in OLD_PROD_NAVS:
+        if old in new:
+            new = new.replace(old, NEW_PROD_NAV)
     if new != txt:
         with open(fn,'w') as f:
             f.write(new)

@@ -48,7 +48,7 @@
           </div>
         </li>
         <li class="has-drop">
-          <a href="#" class="active" >Products <span class="caret">▾</span></a>
+          <a href="packaged-explosives.html" class="active" >Products <span class="caret">▾</span></a>
           <div class="dropdown wide mega">
             <div class="drop-col">
               <a href="packaged-explosives.html" class="drop-head">Packaged Explosives</a>
@@ -72,9 +72,6 @@
             <div class="drop-col">
               <a href="defense.html" class="drop-head">Defense</a>
               <a href="defense.html?filter=tnt">TNT</a>
-              <a href="defense.html?filter=hmx">HMX</a>
-              <a href="defense.html?filter=rdx">RDX</a>
-              <a href="defense.html?filter=pyro">Pyro Devices</a>
             </div>
             <div class="drop-col">
               <a href="chemicals.html" class="drop-head">Chemicals</a>
@@ -135,11 +132,13 @@
         <div class="filter-list">
           <label class="filter-check"><input type="checkbox" data-filter="electronic"><span class="box"></span> Electronic <span class="count">(1)</span></label>
           <label class="filter-check"><input type="checkbox" data-filter="non-electric"><span class="box"></span> Non-Electric <span class="count">(4)</span></label>
-          <label class="filter-check"><input type="checkbox" data-filter="copper-delay"><span class="box"></span> Copper Delay <span class="count">(2)</span></label>
+          <label class="filter-check"><input type="checkbox" data-filter="copper-delay"><span class="box"></span> Copper Delay <span class="count">(1)</span></label>
           <label class="filter-check"><input type="checkbox" data-filter="ordinary"><span class="box"></span> Ordinary <span class="count">(1)</span></label>
           <label class="filter-check"><input type="checkbox" data-filter="cast-booster"><span class="box"></span> Cast Booster <span class="count">(2)</span></label>
           <label class="filter-check"><input type="checkbox" data-filter="detonating-fuse"><span class="box"></span> Detonating Fuse <span class="count">(1)</span></label>
         </div>
+
+
         <span class="filter-clear" id="clearFilters">Clear filters ✕</span>
       </aside>
 
@@ -185,19 +184,11 @@
               <span class="discover">Discover <span class="tri">→</span></span>
             </div>
           </a>
-          <a class="prod-card" data-cat="copper-delay" data-apps="" href="neo-cdd.html">
-            <div class="prod-card-img"><img src="images/products/copper-delay-detonator.jpg" alt="NEO™ CDD" /></div>
+          <a class="prod-card" data-cat="copper-delay" data-apps="" href="copper-delay-detonator.html">
+            <div class="prod-card-img"><img src="images/products/copper-delay-detonator.png" alt="COPPER DELAY DETONATOR" /></div>
             <div class="prod-card-body">
-              <h3>NEO™ CDD</h3>
-              <p>Copper-shell delay detonator for delay initiation in underground coal mines.</p>
-              <span class="discover">Discover <span class="tri">→</span></span>
-            </div>
-          </a>
-          <a class="prod-card" data-cat="copper-delay" data-apps="" href="neo-ced.html">
-            <div class="prod-card-img"><img src="images/products/copper-delay-detonator.jpg" alt="NEO™ CED" /></div>
-            <div class="prod-card-body">
-              <h3>NEO™ CED</h3>
-              <p>Copper electric detonator variant for gassy underground conditions.</p>
+              <h3>COPPER DELAY DETONATOR</h3>
+              <p>Copper-shell electric delay detonator, available in permitted and non-permitted grades, for delay initiation in underground blasting.</p>
               <span class="discover">Discover <span class="tri">→</span></span>
             </div>
           </a>
@@ -205,15 +196,15 @@
             <div class="prod-card-img"><img src="images/products/neo-od.png" alt="NEO™ OD" /></div>
             <div class="prod-card-body">
               <h3>NEO™ OD</h3>
-              <p>Aluminium plain ordinary detonator of No. 8 strength for cap-sensitive explosives.</p>
+              <p>Aluminium plain (No. 8) ordinary detonator, initiated by safety fuse, for cap-sensitive explosives in dry-hole blasting.</p>
               <span class="discover">Discover <span class="tri">→</span></span>
             </div>
           </a>
           <a class="prod-card" data-cat="cast-booster" data-apps="" href="neo-boost.html">
-            <div class="prod-card-img"><img src="images/products/cast-booster.jpg" alt="NEO™ BOOST" /></div>
+            <div class="prod-card-img"><img src="images/products/neo-boost.png" alt="NEO™ BOOST" /></div>
             <div class="prod-card-body">
               <h3>NEO™ BOOST</h3>
-              <p>High-density PETN + TNT cast booster — available in 25, 100, 250 and 500 g sizes.</p>
+              <p>Cap-sensitive emulsion booster (density 1.55 g/cc, VOD 7000 m/s) for priming ANFO, cartridged and bulk explosives.</p>
               <span class="discover">Discover <span class="tri">→</span></span>
             </div>
           </a>
@@ -278,6 +269,8 @@
         <a href="packaged-explosives.html">Packaged Explosives</a>
         <a href="bulk.html">Bulk Explosives</a>
         <a href="initiating-systems.html">Initiating Systems</a>
+        <a href="defense.html">Defense</a>
+        <a href="chemicals.html">Chemicals</a>
       </div>
       <div class="footer-col">
         <h4>Reach Us</h4>
@@ -289,8 +282,6 @@
     <div class="footer-bottom">
       <p>© 2026 SBL Energy Limited. All rights reserved.</p>
       <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Use</a>
         <a href="contact.html">Contact</a>
       </div>
     </div>
@@ -300,7 +291,7 @@
 <script src="js/main.js"></script>
 <script>
 (function(){
-  var qsa = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var qsa = function(s, root){ return Array.prototype.slice.call((root || document).querySelectorAll(s)); };
   // [checkbox attribute, card attribute, URL param]
   var GROUPS = [
     ['data-filter','data-cat','filter'],
@@ -309,6 +300,7 @@
     ['data-dia','data-dia','dia']
   ];
   var cards = qsa('.prod-card');
+  var groups = qsa('.cat-group');
   var empty = document.querySelector('.catalog-empty');
   var clear = document.getElementById('clearFilters');
   var allInputs = [];
@@ -325,6 +317,10 @@
       });
       card.classList.toggle('is-hidden', !ok);
       if(ok) shown++;
+    });
+    groups.forEach(function(group){
+      var visible = qsa('.prod-card', group).some(function(card){ return !card.classList.contains('is-hidden'); });
+      group.classList.toggle('is-hidden', !visible);
     });
     if(empty) empty.classList.toggle('show', shown === 0);
     if(clear) clear.classList.toggle('show', active > 0);
