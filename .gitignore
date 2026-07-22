@@ -11,3 +11,8 @@ __pycache__/
 
 # Raw source product images (processed copies are committed in images/products/)
 assets/ALL Products Image/
+
+# Contact form backend secrets / deps
+server/.env
+server/node_modules/
+
